@@ -9,14 +9,14 @@ from adafruit_simplemath import map_range
 import PID
 
 # Main PID controller
-PID_loop = PID.PID(21, 1.6, 0.04)
+PID_loop = PID.PID(21, 1.6, 0.17)
 """
 Test rig settings:
 5v:
 P = 7.3
 6v:
 just P = 4.65
-PID = 21, 1.6, 0.04
+PID = 21, 1.6, 0.04/0.17
 """
 
 # Clamp the maximum and minimum values reported by the PID loop to control range translation to the throttle.
