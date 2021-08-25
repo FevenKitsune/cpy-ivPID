@@ -6,10 +6,10 @@ import microcontroller
 from analogio import AnalogIn
 from adafruit_motorkit import MotorKit
 from adafruit_simplemath import map_range
-import will_pid
+import PID
 
 # Main PID controller
-PID_loop = will_pid.PID(21, 1.6, 0.04)
+PID_loop = PID.PID(21, 1.6, 0.04)
 """
 Test rig settings:
 5v:
@@ -52,7 +52,7 @@ def main():
     while True:
         servo_value = math.ceil(servo_feedback.value / 64)                      # Decimate 16-bit precision to 0-1023 (10-bit)
         PID_loop.update(servo_value)                                            # Update the PID loop with the decimated value.
-        new_value = -map_range(PID_loop.output, -PID_RANGE, PID_RANGE, -1, 1)   # Map the PID output value to a throttle value from -1 to 1. Clamped with the PID_RANGE property.
+        new_value = -map_range(PID_loop.control_variable, -PID_RANGE, PID_RANGE, -1, 1)   # Map the PID output value to a throttle value from -1 to 1. Clamped with the PID_RANGE property.
         kit.motor3.throttle = new_value                                         # Update the motor with the new throttle value.
 
         """Timer1 Block
