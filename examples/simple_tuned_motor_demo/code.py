@@ -41,18 +41,22 @@ def main():
     This will run indefinitely.
     """
     while True:
-        
+
         servo_value = math.ceil(
             servo_feedback.value / 64
         )  # Decimate 16-bit precision to 0-1023 (10-bit)
-        PID_loop.update(servo_value)  # Update the PID loop with the decimated value.
+        # Update the PID loop with the decimated value.
+        PID_loop.update(servo_value)
         new_value = -map_range(
             PID_loop.control_variable, -PID_RANGE, PID_RANGE, -1, 1
         )  # Map the PID output value to a throttle value from -1 to 1. Clamped with the PID_RANGE property.
-        kit.motor3.throttle = new_value  # Update the motor with the new throttle value.
-        
+        # Update the motor with the new throttle value.
+        kit.motor3.throttle = new_value
+
         print((servo_value, PID_loop.set_point))
         time.sleep(0.01)
+
+
 """
 Putting all your main code within their own function, then using this block of code
 ensures all functions are declared prior to inital execution.
