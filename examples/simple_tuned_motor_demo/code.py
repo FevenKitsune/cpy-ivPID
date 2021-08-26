@@ -1,8 +1,6 @@
 import time
 import board
-import pwmio
 import math
-import microcontroller
 from analogio import AnalogIn
 from adafruit_motorkit import MotorKit
 from adafruit_simplemath import map_range
