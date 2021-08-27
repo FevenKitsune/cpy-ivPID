@@ -18,7 +18,7 @@ def main():
     kit.motor3.throttle = 0.0   # Stop the motor on startup.
     random_min = 200            # Minimum random set_point.
     random_max = 823            # Maximum random set_point.
-    motor_throttle = 1.0        # Motor throttle to use. Higher = faster, but oscillates more. Lower = slower, but oscillates less.
+    motor_throttle = 0.6        # Motor throttle to use. Higher = faster, but oscillates more. Lower = slower, but oscillates less.
     start_time = 0.0            # Initalizer for start_time variable.
     convergance_time = 5.0      # How long the controller should attempt to converge on the set_point.
 
