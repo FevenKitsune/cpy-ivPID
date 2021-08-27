@@ -6,7 +6,6 @@ from adafruit_motorkit import MotorKit
 from adafruit_simplemath import map_range
 import PID
 
-# TODO: Comment this code. Make it clear where the sensor is reading data, and where the output is set.
 
 PID_loop = PID.PID(21, 1.6, 0.195)  # Main PID controller
 """
@@ -26,8 +25,6 @@ servo_feedback = AnalogIn(board.A3) # Servo data
 """
 Main function
 """
-
-
 def main():
     # main() setup code
     kit.motor3.throttle = 0.0  # Stop the motor on startup.
@@ -37,12 +34,12 @@ def main():
     This will run indefinitely.
     """
     while True:
-        servo_value = math.ceil(servo_feedback.value / 64)  # Decimate 16-bit precision to 0-1023 (10-bit)
+        servo_value = math.ceil(servo_feedback.value / 64)  # Retrieve sensor data and decimate 16-bit precision to 0-1023 (10-bit)
         PID_loop.update(servo_value)                        # Update the PID loop with the decimated value.
         new_value = -map_range(                             # Map the PID output value to a throttle value from -1 to 1. Clamped with the PID_RANGE property.
-            PID_loop.control_variable,
-            -PID_RANGE, PID_RANGE,
-            -1, 1
+            PID_loop.control_variable,  # The output from the PID loop.
+            -PID_RANGE, PID_RANGE,      # The min/max expected from the PID loop.
+            -1, 1                       # The min/max of the device controlled by the PID loop.
         )
         kit.motor3.throttle = new_value                     # Update the motor with the new throttle value.
         print((servo_value, PID_loop.set_point))            # Print the measured value versus the set_point.

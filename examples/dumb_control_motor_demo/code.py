@@ -36,7 +36,7 @@ def main():
         start_time = time.monotonic()               # Start convergence timer.
         
         while time.monotonic() - start_time < convergance_time: # While the elapsed time is less than convergence_time, loop.
-            servo_value = math.ceil(servo_feedback.value / 64)  # Read sensor data and decimate 16-bit precision to 0-1023 (10-bit)
+            servo_value = math.ceil(servo_feedback.value / 64)  # Retrieve sensor data and decimate 16-bit precision to 0-1023 (10-bit)
             if servo_value < set_point:
                 kit.motor3.throttle = -motor_throttle           # If the servo is under the set_point then set throttle to negative.
             elif servo_value > set_point:
