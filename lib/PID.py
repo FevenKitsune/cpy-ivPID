@@ -24,15 +24,16 @@ class PID:
         D -- the derivative weight assigned on object creation. (default 0.0)
         """
 
-        """self.* variables are instance variables and are unique to the instance of the object."""
-        self.Kp = P  # The instance variable for P weight
-        self.Ki = I  # The instance variable for I weight
-        self.Kd = D  # The instance variable for D weight
-
-        """Variables assigned to a null value are typically assigned later in the program."""
-        self.Pterm = 0.0  # The computed P term.
-        self.Iterm = 0.0  # The computed I term.
-        self.Dterm = 0.0  # The computed D term.
+        # self.* variables are instance variables and are unique to the instance of the object.
+        # Weight variables
+        self.Kp = P
+        self.Ki = I
+        self.Kd = D
+        # Variables assigned to a null value are typically assigned later in the program.
+        # Term variables. Computed in update().
+        self.Pterm = 0.0
+        self.Iterm = 0.0
+        self.Dterm = 0.0
 
         # set_point tracks the desired target output.
         self.set_point = 0.0
@@ -42,15 +43,17 @@ class PID:
         self.last_time = self.current_time
         # last_error caches the error from the prevous time update() was called to compute error delta.
         self.last_error = 0.0
-
         # control_variable is the output determined by the PID controller.
         self.control_variable = 0.0
 
     def clear(self):
         """Clear all PID computations and coefficients.
         
+        Keyword arguments:
+        None
         """
-        self.set_point = 0.0    # Clear all terms!
+        # Clear all terms!
+        self.set_point = 0.0
         self.Pterm = 0.0
         self.Iterm = 0.0
         self.Dterm = 0.0
@@ -82,15 +85,13 @@ class PID:
         if delta_time > 0:
             # If time has passed, update the D-term with the change of error (delta_error) over the change of time (delta_time)
             self.Dterm = delta_error / delta_time
-
+            
         # Now that computation has finished, set last_time to the time used for current_time.
         self.last_time = self.current_time
         # Set last_error to the error computed.
         self.last_error = error
-
         # Compute all 3 terms of the PID formula.
-        self.control_variable = self.Pterm + \
-            (self.Ki * self.Iterm) + (self.Kd * self.Dterm)
+        self.control_variable = self.Pterm + (self.Ki * self.Iterm) + (self.Kd * self.Dterm)
 
     def setSetPoint(self, desired_set_point):
         """Change the PID controller set point.

@@ -14,7 +14,12 @@ servo_feedback = AnalogIn(board.A3) # Servo data
 Main function
 """
 def main():
-    # main() setup code
+    """The main function. Good practice to have a defined starting point.
+    Called at the end of the code.
+
+    Keyword arguments:
+    None
+    """
     kit.motor3.throttle = 0.0   # Stop the motor on startup.
     random_min = 200            # Minimum random set_point.
     random_max = 823            # Maximum random set_point.
