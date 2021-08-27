@@ -8,14 +8,14 @@ from adafruit_simplemath import map_range
 import PID
 
 
-PID_loop = PID.PID(21, 1.6, 0.04)  # Main PID controller
+PID_loop = PID.PID(21, 0.4, 0.195)  # Main PID controller
 """
 Test rig settings:
 5v:
 P = 7.3
 6v:
 just P = 4.65
-PID = 21, 1.6, 0.04 for small movements, ~0.5 for large movements 0.195?
+PID = 21, 1.6/0.4, 0.04 for small movements, ~0.5 for large movements 0.195?
 """
 
 PID_RANGE = 1536                    # Clamp the maximum and minimum values reported by the PID loop to control range translation to the throttle.
@@ -41,13 +41,14 @@ def main():
     while True:
         print("Finding new target point...")
         set_point = randint(random_min, random_max) # Find a new random set_point.
-        PID_loop.setSetPoint(set_point)
         print(                                      # Announce new set_point.
             f"Target is {set_point}\n"
             f"Starting convergence in 5 seconds..."
         )
         time.sleep(5.0)                             # Wait 5 seconds before beginning convergence.
         start_time = time.monotonic()               # Start convergence timer.
+        PID_loop.clear()                            # Clear terms from previous cycle. Set after delay to prevent windup.
+        PID_loop.setSetPoint(set_point)             # Set point to calculated value.
         
         while time.monotonic() - start_time < convergance_time: # While the elapsed time is less than convergence_time, loop.
             servo_value = math.ceil(servo_feedback.value / 64)  # Retrieve sensor data and decimate 16-bit precision to 0-1023 (10-bit)

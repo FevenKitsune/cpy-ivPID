@@ -46,6 +46,17 @@ class PID:
         # control_variable is the output determined by the PID controller.
         self.control_variable = 0.0
 
+    def clear(self):
+        """Clear all PID computations and coefficients.
+        
+        """
+        self.set_point = 0.0    # Clear all terms!
+        self.Pterm = 0.0
+        self.Iterm = 0.0
+        self.Dterm = 0.0
+        self.last_error = 0.0
+        self.control_variable = 0.0
+
     def update(self, process_variable):
         """Update the PID controller with the measured process variable and compute the control variable.
 
