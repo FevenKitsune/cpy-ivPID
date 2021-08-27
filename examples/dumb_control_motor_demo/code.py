@@ -5,12 +5,9 @@ from random import randint
 from analogio import AnalogIn
 from adafruit_motorkit import MotorKit
 
-# TODO: Comment this code. Make it clear where the sensor is reading data, and where the output is set.
 
-# Motor driver object
-kit = MotorKit()
-# Servo data
-servo_feedback = AnalogIn(board.A3)
+kit = MotorKit()                    # Motor driver object
+servo_feedback = AnalogIn(board.A3) # Servo data
 
 
 """
@@ -18,45 +15,39 @@ Main function
 """
 def main():
     # main() setup code
-    kit.motor3.throttle = 0.0  # Stop the motor on startup.
-    set_point = 200
-    random_min = 200
-    random_max = 823
-    motor_throttle = 1.0
-
-    start_time = 0.0
-    convergance_time = 5.0
+    kit.motor3.throttle = 0.0   # Stop the motor on startup.
+    random_min = 200            # Minimum random set_point.
+    random_max = 823            # Maximum random set_point.
+    motor_throttle = 1.0        # Motor throttle to use. Higher = faster, but oscillates more. Lower = slower, but oscillates less.
+    start_time = 0.0            # Initalizer for start_time variable.
+    convergance_time = 5.0      # How long the controller should attempt to converge on the set_point.
 
     """Primary task loop!
     This will run indefinitely.
     """
     while True:
         print("Finding new target point...")
-        set_point = randint(random_min, random_max)
-        print(f"Target is {set_point}")
-        print("Starting convergence in 5 seconds...")
-        time.sleep(5.0)
-        start_time = time.monotonic()
-        while time.monotonic() - start_time < convergance_time:
-            servo_value = math.ceil(
-                servo_feedback.value / 64
-            )  # Decimate 16-bit precision to 0-1023 (10-bit)
+        set_point = randint(random_min, random_max) # Find a new random set_point.
+        print(                                      # Announce new set_point.
+            f"Target is {set_point}\n"
+            f"Starting convergence in 5 seconds..."
+        )
+        time.sleep(5.0)                             # Wait 5 seconds before beginning convergence.
+        start_time = time.monotonic()               # Start convergence timer.
         
+        while time.monotonic() - start_time < convergance_time: # While the elapsed time is less than convergence_time, loop.
+            servo_value = math.ceil(servo_feedback.value / 64)  # Read sensor data and decimate 16-bit precision to 0-1023 (10-bit)
             if servo_value < set_point:
-                kit.motor3.throttle = -motor_throttle
+                kit.motor3.throttle = -motor_throttle           # If the servo is under the set_point then set throttle to negative.
             elif servo_value > set_point:
-                kit.motor3.throttle = motor_throttle
+                kit.motor3.throttle = motor_throttle            # If the servo is above the set_point then set throttle to positive.
             else:
-                kit.motor3.throttle = 0.0
+                kit.motor3.throttle = 0.0                       # If the servo is on the set_point, set throttle to zero.
+            print((servo_value, set_point))                     # Print the measured value versus the set_point.
+            time.sleep(0.01)                                    # Wait 0.01 seconds before trying again.
 
-            print((servo_value, set_point))
-            time.sleep(0.01)
-        
-        kit.motor3.throttle = 0.0
-        print("Convergence complete.")
-
-        
-        
+        kit.motor3.throttle = 0.0       # Once convergence timer has expired, stop motor.
+        print("Convergence complete.")  # Announce completion and loop back to beginning.
 
 
 """
